@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenRA.Mods.Common.Orders;
 using OpenRA.Mods.Common.Traits;
+using OpenRA.Mods.Common.Traits.Render;
 using OpenRA.Primitives;
 using OpenRA.Traits;
 
@@ -103,6 +104,7 @@ namespace OpenRA.Mods.Cnc.Traits
 	{
 		public ActorInfo AsActor { get; private set; }
 		public Player AsPlayer { get; private set; }
+		public string AsSprite { get; private set; }
 		public ITooltipInfo AsTooltipInfo { get; private set; }
 
 		public bool Disguised => AsPlayer != null;
@@ -182,12 +184,14 @@ namespace OpenRA.Mods.Cnc.Traits
 				var targetDisguise = target.TraitOrDefault<Disguise>();
 				if (targetDisguise != null && targetDisguise.Disguised)
 				{
+					AsSprite = targetDisguise.AsSprite;
 					AsPlayer = targetDisguise.AsPlayer;
 					AsActor = targetDisguise.AsActor;
 					AsTooltipInfo = targetDisguise.AsTooltipInfo;
 				}
 				else
 				{
+					AsSprite = target.Trait<RenderSprites>().GetImage(target);
 					var tooltip = target.TraitsImplementing<ITooltip>().FirstEnabledTraitOrDefault();
 					if (tooltip == null)
 						throw new ArgumentNullException("tooltip", "Missing tooltip or invalid target.");
@@ -202,6 +206,7 @@ namespace OpenRA.Mods.Cnc.Traits
 				AsTooltipInfo = null;
 				AsPlayer = null;
 				AsActor = self.Info;
+				AsSprite = null;
 			}
 
 			HandleDisguise(oldEffectiveActor, oldEffectiveOwner, oldDisguiseSetting);
@@ -213,6 +218,8 @@ namespace OpenRA.Mods.Cnc.Traits
 			var oldEffectiveOwner = AsPlayer;
 			var oldDisguiseSetting = Disguised;
 
+			var renderSprites = actorInfo.TraitInfoOrDefault<RenderSpritesInfo>();
+			AsSprite = renderSprites == null ? null : renderSprites.GetImage(actorInfo, newOwner.Faction.InternalName);
 			AsPlayer = newOwner;
 			AsActor = actorInfo;
 			AsTooltipInfo = actorInfo.TraitInfos<TooltipInfo>().FirstOrDefault(info => info.EnabledByDefault);

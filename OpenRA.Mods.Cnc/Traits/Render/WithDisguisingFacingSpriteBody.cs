@@ -1,6 +1,6 @@
 #region Copyright & License Information
 /*
- * Copyright 2007-2021 The OpenRA Developers (see AUTHORS)
+ * Copyright 2007-2017 The OpenRA Developers (see AUTHORS)
  * This file is part of OpenRA, which is free software. It is made
  * available to you under the terms of the GNU General Public License
  * as published by the Free Software Foundation, either version 3 of
@@ -9,24 +9,24 @@
  */
 #endregion
 
-using System.Linq;
+using OpenRA.Mods.Common.Traits;
 using OpenRA.Mods.Common.Traits.Render;
 using OpenRA.Traits;
 
 namespace OpenRA.Mods.Cnc.Traits.Render
 {
-	class WithDisguisingInfantryBodyInfo : WithInfantryBodyInfo, Requires<DisguiseInfo>
+	class WithDisguisingFacingSpriteBodyInfo : WithFacingSpriteBodyInfo, Requires<DisguiseInfo>
 	{
-		public override object Create(ActorInitializer init) { return new WithDisguisingInfantryBody(init, this); }
+		public override object Create(ActorInitializer init) { return new WithDisguisingFacingSpriteBody(init, this); }
 	}
 
-	class WithDisguisingInfantryBody : WithInfantryBody
+	class WithDisguisingFacingSpriteBody : WithFacingSpriteBody, ITick
 	{
 		readonly Disguise disguise;
 		readonly RenderSprites rs;
 		string intendedSprite;
 
-		public WithDisguisingInfantryBody(ActorInitializer init, WithDisguisingInfantryBodyInfo info)
+		public WithDisguisingFacingSpriteBody(ActorInitializer init, WithDisguisingFacingSpriteBodyInfo info)
 			: base(init, info)
 		{
 			rs = init.Self.Trait<RenderSprites>();
@@ -34,20 +34,14 @@ namespace OpenRA.Mods.Cnc.Traits.Render
 			intendedSprite = disguise.AsSprite;
 		}
 
-		protected override void Tick(Actor self)
+		void ITick.Tick(Actor self)
 		{
 			if (disguise.AsSprite != intendedSprite)
 			{
 				intendedSprite = disguise.AsSprite;
-
-				var sequence = DefaultAnimation.GetRandomExistingSequence(GetDisplayInfo().StandSequences, Game.CosmeticRandom);
-				if (sequence != null)
-					DefaultAnimation.ChangeImage(intendedSprite ?? rs.GetImage(self), sequence);
-
+				DefaultAnimation.ChangeImage(intendedSprite ?? rs.GetImage(self), DefaultAnimation.CurrentSequence.Name);
 				rs.UpdatePalette();
 			}
-
-			base.Tick(self);
 		}
 	}
 }
