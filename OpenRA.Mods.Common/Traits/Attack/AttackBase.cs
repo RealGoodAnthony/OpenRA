@@ -379,7 +379,9 @@ namespace OpenRA.Mods.Common.Traits
 			return Armaments.Where(a =>
 				!a.IsTraitDisabled
 				&& (owner == null || (forceAttack ? a.Info.ForceTargetRelationships : a.Info.TargetRelationships).HasRelationship(self.Owner.RelationshipWith(owner)))
-				&& a.Weapon.IsValidAgainst(t, self.World, self));
+				&& a.Weapon.IsValidAgainst(t, self.World, self)
+				&& (a.Weapon.RequiresForceFire ? forceAttack : true)
+				&& (a.Weapon.RequiresNormalFire ? !forceAttack : true));
 		}
 
 		public void AttackTarget(in Target target, AttackSource source, bool queued, bool allowMove, bool forceAttack = false, Color? targetLineColor = null)
