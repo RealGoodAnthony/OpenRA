@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using OpenRA.FileFormats;
 using OpenRA.Graphics;
 using OpenRA.Mods.Common.Terrain;
 using OpenRA.Primitives;
@@ -62,6 +63,8 @@ namespace OpenRA.Mods.Common.Traits
 	public sealed class TerrainRenderer : IRenderTerrain, IWorldLoaded, INotifyActorDisposing, ITiledTerrainRenderer
 	{
 		readonly Map map;
+		Sprite skyImage;
+		float2 skySz;
 		TerrainSpriteLayer spriteLayer;
 		readonly DefaultTerrain terrainInfo;
 		readonly DefaultTileCache tileCache;
@@ -81,6 +84,18 @@ namespace OpenRA.Mods.Common.Traits
 		void IWorldLoaded.WorldLoaded(World world, WorldRenderer wr)
 		{
 			worldRenderer = wr;
+
+			if (map.SkyboxImage != null && map.Package.Contains(map.SkyboxImage))
+			{
+				skySz = new float2(Game.Renderer.Resolution.Width, Game.Renderer.Resolution.Width);
+				using (var dataStream = map.Package.GetStream(map.SkyboxImage))
+				{
+					var png = new Png(dataStream);
+					var sheetBuilder = new SheetBuilder(SheetType.BGRA, png.Width);
+					skyImage = sheetBuilder.Add(png);
+				}
+			}
+
 			spriteLayer = new TerrainSpriteLayer(world, wr, tileCache.MissingTile, BlendMode.Alpha, world.Type != WorldType.Editor);
 			foreach (var cell in map.AllCells)
 				UpdateCell(cell);
@@ -101,8 +116,17 @@ namespace OpenRA.Mods.Common.Traits
 			spriteLayer.Update(cell, sprite, paletteReference);
 		}
 
+		void DrawSkybox(WorldRenderer wr, Viewport viewport)
+		{
+			if (skyImage == null)
+				return;
+			Game.Renderer.RgbaSpriteRenderer.DrawSprite(skyImage, float2.Zero, skySz);
+		}
+
 		void IRenderTerrain.RenderTerrain(WorldRenderer wr, Viewport viewport)
 		{
+			DrawSkybox(wr, viewport);
+
 			spriteLayer.Draw(wr.Viewport);
 
 			foreach (var r in wr.World.WorldActor.TraitsImplementing<IRenderOverlay>())
