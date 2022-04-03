@@ -42,13 +42,6 @@ namespace OpenRA.Mods.Common.Activities
 
 		public override bool Tick(Actor self)
 		{
-			// Refuse to take off if it would land immediately again.
-			if (aircraft.ForceLanding)
-			{
-				Cancel(self);
-				return true;
-			}
-
 			// Having flyTicks < 0 is valid and means the actor flies until this activity is canceled
 			if (IsCanceling || (flyTicks > 0 && ticks++ >= flyTicks) || (flyTicks == 0 && remainingDistance <= 0))
 				return true;

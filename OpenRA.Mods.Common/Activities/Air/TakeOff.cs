@@ -27,9 +27,6 @@ namespace OpenRA.Mods.Common.Activities
 
 		protected override void OnFirstRun(Actor self)
 		{
-			if (aircraft.ForceLanding)
-				return;
-
 			if (self.World.Map.DistanceAboveTerrain(aircraft.CenterPosition).Length >= aircraft.Info.MinAirborneAltitude)
 				return;
 
@@ -42,13 +39,6 @@ namespace OpenRA.Mods.Common.Activities
 
 		public override bool Tick(Actor self)
 		{
-			// Refuse to take off if it would land immediately again.
-			if (aircraft.ForceLanding)
-			{
-				Cancel(self);
-				return true;
-			}
-
 			var dat = self.World.Map.DistanceAboveTerrain(aircraft.CenterPosition);
 			if (dat < aircraft.Info.CruiseAltitude)
 			{

@@ -125,10 +125,6 @@ namespace OpenRA.Mods.Common.Activities
 
 		public override bool Tick(Actor self)
 		{
-			// Refuse to take off if it would land immediately again.
-			if (aircraft.ForceLanding)
-				Cancel(self);
-
 			var dat = self.World.Map.DistanceAboveTerrain(aircraft.CenterPosition);
 			var isLanded = dat <= aircraft.LandAltitude;
 

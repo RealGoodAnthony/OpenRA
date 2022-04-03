@@ -279,7 +279,6 @@ namespace OpenRA.Mods.Common.Traits
 
 		public Actor ReservedActor { get; private set; }
 		public bool MayYieldReservation { get; private set; }
-		public bool ForceLanding { get; private set; }
 
 		IEnumerable<CPos> landingCells = Enumerable.Empty<CPos>();
 		bool requireForceMove;
@@ -406,23 +405,6 @@ namespace OpenRA.Mods.Common.Traits
 
 		protected virtual void Tick(Actor self)
 		{
-			// Add land activity if Aircraft trait is paused and the actor can land at the current location.
-			if (!ForceLanding && IsTraitPaused && airborne && CanLand(self.Location)
-				&& !((self.CurrentActivity is Land) || self.CurrentActivity is Turn))
-			{
-				self.QueueActivity(false, new Land(self));
-				ForceLanding = true;
-			}
-
-			// Add takeoff activity if Aircraft trait is not paused and the actor should not land when idle.
-			if (ForceLanding && !IsTraitPaused && !cruising && !(self.CurrentActivity is TakeOff))
-			{
-				ForceLanding = false;
-
-				if (Info.IdleBehavior != IdleBehaviorType.Land)
-					self.QueueActivity(false, new TakeOff(self));
-			}
-
 			var oldCachedFacing = cachedFacing;
 			cachedFacing = Facing;
 
