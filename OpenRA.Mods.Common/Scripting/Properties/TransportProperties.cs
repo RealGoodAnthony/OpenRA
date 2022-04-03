@@ -38,6 +38,7 @@ namespace OpenRA.Mods.Common.Scripting
 		[Desc("Specifies the amount of passengers.")]
 		public int PassengerCount => cargo.Passengers.Count();
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Teleport an existing actor inside this transport.")]
 		public void LoadPassenger(Actor a)
 		{

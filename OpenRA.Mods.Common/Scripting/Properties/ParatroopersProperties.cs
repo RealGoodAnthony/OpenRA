@@ -27,6 +27,7 @@ namespace OpenRA.Mods.Common.Scripting
 			pp = self.TraitsImplementing<ParatroopersPower>().First();
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Activate the actor's Paratroopers Power. Returns the aircraft that will drop the reinforcements.")]
 		public Actor[] TargetParatroopers(WPos target, WAngle? facing = null)
 		{
@@ -34,6 +35,7 @@ namespace OpenRA.Mods.Common.Scripting
 			return actors.Aircraft;
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Activate the actor's Paratroopers Power. Returns the aircraft that will drop the reinforcements. DEPRECATED! Will be removed.")]
 		public Actor[] ActivateParatroopers(WPos target, int facing = -1)
 		{

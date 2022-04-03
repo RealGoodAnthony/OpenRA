@@ -42,6 +42,16 @@ namespace OpenRA.Scripting
 	// For property groups that are safe to initialize invoke on destroyed actors
 	public sealed class ExposedForDestroyedActors : Attribute { }
 
+	// Defines availability of the Lua interface.
+	// Mission only, AI only, or both.
+	[Flags]
+	public enum ScriptContextType { Mission, AI }
+	public sealed class ScriptContextAttribute : Attribute
+	{
+		public readonly ScriptContextType Type;
+		public ScriptContextAttribute(ScriptContextType type) { Type = type; }
+	}
+
 	public sealed class ScriptActorPropertyActivityAttribute : Attribute { }
 
 	public abstract class ScriptActorProperties
@@ -95,7 +105,7 @@ namespace OpenRA.Scripting
 				throw new InvalidOperationException($"[ScriptGlobal] attribute not found for global table '{type}'");
 
 			Name = names.First().Name;
-			Bind(new[] { this });
+			Bind(new[] { this }, Context is AIScriptContext ? BindAIOnly : BindMissionOnly);
 		}
 
 		protected IEnumerable<T> FilteredObjects<T>(IEnumerable<T> objects, LuaFunction filter)
@@ -121,7 +131,7 @@ namespace OpenRA.Scripting
 		public ScriptGlobalAttribute(string name) { Name = name; }
 	}
 
-	public sealed class ScriptContext : IDisposable
+	public class ScriptContext : IDisposable
 	{
 		// Restrict user scripts (excluding system libraries) to 50 MB of memory use
 		const int MaxUserScriptMemory = 50 * 1024 * 1024;

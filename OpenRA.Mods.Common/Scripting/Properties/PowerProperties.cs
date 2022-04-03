@@ -38,6 +38,7 @@ namespace OpenRA.Mods.Common.Scripting
 		      "(\"Normal\", \"Low\" or \"Critical\").")]
 		public string PowerState => pm.PowerState.ToString();
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Triggers low power for the chosen amount of ticks.")]
 		public void TriggerPowerOutage(int ticks)
 		{

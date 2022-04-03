@@ -103,6 +103,7 @@ namespace OpenRA.Mods.Common.Scripting
 			throw new LuaException($"Invalid data type for '{initInstance[0]}' (expected one of {types})");
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Create a new actor. initTable specifies a list of key-value pairs that defines the initial parameters for the actor's traits.")]
 		public Actor Create(string type, bool addToWorld, LuaTable initTable)
 		{

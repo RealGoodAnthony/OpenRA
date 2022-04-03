@@ -27,9 +27,10 @@ namespace OpenRA.Mods.Common.Scripting
 			radarPings = context.World.WorldActor.TraitOrDefault<RadarPings>();
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Creates a new beacon that stays for the specified time at the specified WPos. " +
-			"Does not remove player set beacons, nor gets removed by placing them. " +
-			"Requires the 'PlaceBeacon' trait on the player actor.")]
+		      "Does not remove player set beacons, nor gets removed by placing them. " +
+		      "Requires the 'PlaceBeacon' trait on the player actor.")]
 		public void New(Player owner, WPos position, int duration = 750, bool showRadarPings = true)
 		{
 			var beacon = owner.PlayerActor.Info.TraitInfoOrDefault<PlaceBeaconInfo>();

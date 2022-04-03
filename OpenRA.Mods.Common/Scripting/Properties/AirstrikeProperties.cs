@@ -27,12 +27,14 @@ namespace OpenRA.Mods.Common.Scripting
 			ap = self.TraitsImplementing<AirstrikePower>().First();
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Activate the actor's Airstrike Power. Returns the aircraft that will attack.")]
 		public Actor[] TargetAirstrike(WPos target, WAngle? facing = null)
 		{
 			return ap.SendAirstrike(Self, target, facing);
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Activate the actor's Airstrike Power. DEPRECATED! Will be removed.")]
 		public void SendAirstrike(WPos target, bool randomize = true, int facing = 0)
 		{
@@ -40,6 +42,7 @@ namespace OpenRA.Mods.Common.Scripting
 			ap.SendAirstrike(Self, target, randomize ? (WAngle?)null : WAngle.FromFacing(facing));
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Activate the actor's Airstrike Power. DEPRECATED! Will be removed.")]
 		public void SendAirstrikeFrom(CPos from, CPos to)
 		{

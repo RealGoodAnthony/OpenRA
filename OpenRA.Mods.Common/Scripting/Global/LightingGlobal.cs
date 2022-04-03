@@ -30,6 +30,7 @@ namespace OpenRA.Mods.Common.Scripting
 			hasLighting = lighting != null;
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Controls the `" + nameof(FlashPaletteEffect) + "` trait.")]
 		public void Flash(string type = null, int ticks = -1)
 		{
@@ -41,24 +42,32 @@ namespace OpenRA.Mods.Common.Scripting
 		public double Red
 		{
 			get => hasLighting ? lighting.Red : 1d;
+
+			[ScriptContext(ScriptContextType.Mission)]
 			set { if (hasLighting) lighting.Red = (float)value; }
 		}
 
 		public double Green
 		{
 			get => hasLighting ? lighting.Green : 1d;
+
+			[ScriptContext(ScriptContextType.Mission)]
 			set { if (hasLighting) lighting.Green = (float)value; }
 		}
 
 		public double Blue
 		{
 			get => hasLighting ? lighting.Blue : 1d;
+
+			[ScriptContext(ScriptContextType.Mission)]
 			set { if (hasLighting) lighting.Blue = (float)value; }
 		}
 
 		public double Ambient
 		{
 			get => hasLighting ? lighting.Ambient : 1d;
+
+			[ScriptContext(ScriptContextType.Mission)]
 			set { if (hasLighting) lighting.Ambient = (float)value; }
 		}
 	}

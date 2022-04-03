@@ -73,6 +73,7 @@ namespace OpenRA.Mods.Common.Scripting
 			return Self.HasScriptProperty(Context, name);
 		}
 
+		[ScriptContext(ScriptContextType.Mission)]
 		[Desc("Render a target flash on the actor.")]
 		public void Flash(Color color, int count = 2, int interval = 2, int delay = 0)
 		{
