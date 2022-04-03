@@ -24,6 +24,7 @@ namespace OpenRA.Mods.Common.Activities
 		enum EnterState { Approaching, Entering, Exiting, Finished }
 
 		readonly IMove move;
+		readonly WDist closeEnoughDist;
 		readonly Color? targetLineColor;
 
 		Target target;
@@ -31,10 +32,11 @@ namespace OpenRA.Mods.Common.Activities
 		bool useLastVisibleTarget;
 		EnterState lastState = EnterState.Approaching;
 
-		protected Enter(Actor self, in Target target, Color? targetLineColor = null)
+		protected Enter(Actor self, in Target target, WDist closeEnoughDist, Color? targetLineColor = null)
 		{
 			move = self.Trait<IMove>();
 			this.target = target;
+			this.closeEnoughDist = closeEnoughDist;
 			this.targetLineColor = targetLineColor;
 			ChildHasPriority = false;
 		}
@@ -127,8 +129,9 @@ namespace OpenRA.Mods.Common.Activities
 				case EnterState.Entering:
 				{
 					// Check that we reached the requested position
-					var targetPos = target.Positions.PositionClosestTo(self.CenterPosition);
-					if (!IsCanceling && self.CenterPosition == targetPos && target.Type == TargetType.Actor)
+					var closeEnough = (target.Positions.PositionClosestTo(self.CenterPosition) - self.CenterPosition).HorizontalLengthSquared
+							<= closeEnoughDist.LengthSquared;
+					if (!IsCanceling && closeEnough && target.Type == TargetType.Actor)
 						OnEnterComplete(self, target.Actor);
 
 					lastState = EnterState.Exiting;

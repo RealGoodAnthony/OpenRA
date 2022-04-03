@@ -32,7 +32,7 @@ namespace OpenRA.Mods.Common.Activities
 
 		public Demolish(Actor self, in Target target, EnterBehaviour enterBehaviour, int delay, int flashes,
 			int flashesDelay, int flashInterval, BitSet<DamageType> damageTypes, Color? targetLineColor)
-			: base(self, target, targetLineColor)
+			: base(self, target, WDist.Zero, targetLineColor)
 		{
 			notifiers = self.TraitsImplementing<INotifyDemolition>().ToArray();
 			this.delay = delay;

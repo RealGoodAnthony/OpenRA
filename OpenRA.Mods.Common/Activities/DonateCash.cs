@@ -22,7 +22,7 @@ namespace OpenRA.Mods.Common.Activities
 		readonly int playerExperience;
 
 		public DonateCash(Actor self, in Target target, int payload, int playerExperience, Color? targetLineColor)
-			: base(self, target, targetLineColor)
+			: base(self, target, WDist.Zero, targetLineColor)
 		{
 			this.payload = payload;
 			this.playerExperience = playerExperience;

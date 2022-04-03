@@ -25,7 +25,7 @@ namespace OpenRA.Mods.Cnc.Activities
 		Actor enterActor;
 
 		public Infiltrate(Actor self, in Target target, Infiltrates infiltrates, Color? targetLineColor)
-			: base(self, target, targetLineColor)
+			: base(self, target, WDist.Zero, targetLineColor)
 		{
 			this.infiltrates = infiltrates;
 			notifiers = self.TraitsImplementing<INotifyInfiltration>().ToArray();

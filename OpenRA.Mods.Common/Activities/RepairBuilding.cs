@@ -23,7 +23,7 @@ namespace OpenRA.Mods.Common.Activities
 		EngineerRepairable enterEngineerRepariable;
 
 		public RepairBuilding(Actor self, in Target target, EngineerRepairInfo info)
-			: base(self, target, info.TargetLineColor)
+			: base(self, target, WDist.Zero, info.TargetLineColor)
 		{
 			this.info = info;
 		}

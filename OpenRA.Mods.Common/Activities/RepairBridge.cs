@@ -25,7 +25,7 @@ namespace OpenRA.Mods.Common.Activities
 		LegacyBridgeHut enterLegacyHut;
 
 		public RepairBridge(Actor self, in Target target, EnterBehaviour enterBehaviour, string notification, Color targetLineColor)
-			: base(self, target, targetLineColor)
+			: base(self, target, WDist.Zero, targetLineColor)
 		{
 			this.enterBehaviour = enterBehaviour;
 			this.notification = notification;
