@@ -420,7 +420,11 @@ namespace OpenRA
 				World.TraitDict.RemoveActor(this);
 				Disposed = true;
 
-				luaInterface?.Value.OnActorDestroyed();
+				foreach (var luaInterface in luaInterfaces)
+					luaInterface.Value.Value.OnActorDestroyed();
+
+				// Must not clear, some properties like IsDead still needs the context.
+				// luaInterfaces.Clear();
 			});
 		}
 
@@ -597,17 +601,17 @@ namespace OpenRA
 
 		#region Scripting interface
 
-		Lazy<ScriptActorInterface> luaInterface;
+		readonly Dictionary<LuaRuntime, Lazy<ScriptActorInterface>> luaInterfaces = new Dictionary<LuaRuntime, Lazy<ScriptActorInterface>>();
 		public void OnScriptBind(ScriptContext context)
 		{
-			if (luaInterface == null)
-				luaInterface = Exts.Lazy(() => new ScriptActorInterface(context, this));
+			if (!luaInterfaces.ContainsKey(context.Runtime))
+				luaInterfaces.Add(context.Runtime, Exts.Lazy(() => new ScriptActorInterface(context, this)));
 		}
 
 		public LuaValue this[LuaRuntime runtime, LuaValue keyValue]
 		{
-			get => luaInterface.Value[runtime, keyValue];
-			set => luaInterface.Value[runtime, keyValue] = value;
+			get { return luaInterfaces[runtime].Value[runtime, keyValue]; }
+			set { luaInterfaces[runtime].Value[runtime, keyValue] = value; }
 		}
 
 		public LuaValue Equals(LuaRuntime runtime, LuaValue left, LuaValue right)
@@ -623,9 +627,9 @@ namespace OpenRA
 			return $"Actor ({this})";
 		}
 
-		public bool HasScriptProperty(string name)
+		public bool HasScriptProperty(ScriptContext context, string name)
 		{
-			return luaInterface.Value.ContainsKey(name);
+			return luaInterfaces[context.Runtime].Value.ContainsKey(name);
 		}
 
 		#endregion

@@ -70,7 +70,7 @@ namespace OpenRA.Mods.Common.Scripting
 		[Desc("Test whether an actor has a specific property.")]
 		public bool HasProperty(string name)
 		{
-			return Self.HasScriptProperty(name);
+			return Self.HasScriptProperty(Context, name);
 		}
 
 		[Desc("Render a target flash on the actor.")]
