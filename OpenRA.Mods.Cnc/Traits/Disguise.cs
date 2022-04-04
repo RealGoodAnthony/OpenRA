@@ -339,7 +339,7 @@ namespace OpenRA.Mods.Cnc.Traits
 			if (!info.ValidRelationships.HasRelationship(relationship))
 				return false;
 
-			return info.TargetTypes.Overlaps(target.GetAllTargetTypes());
+			return info.TargetTypes.Overlaps(target.GetEnabledTargetTypes());
 		}
 
 		public override bool CanTargetFrozenActor(Actor self, FrozenActor target, TargetModifiers modifiers, ref string cursor)
