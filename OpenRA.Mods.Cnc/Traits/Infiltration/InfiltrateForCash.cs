@@ -18,7 +18,7 @@ using OpenRA.Traits;
 namespace OpenRA.Mods.Cnc.Traits
 {
 	[Desc("Funds are transferred from the owner to the infiltrator.")]
-	class InfiltrateForCashInfo : TraitInfo
+	class InfiltrateForCashInfo : ConditionalTraitInfo
 	{
 		[Desc("The `TargetTypes` from `Targetable` that are allowed to enter.")]
 		public readonly BitSet<TargetableType> Types = default(BitSet<TargetableType>);
